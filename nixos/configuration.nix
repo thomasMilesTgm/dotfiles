@@ -13,6 +13,76 @@
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
+
+  # System wide packages
+  # To search, run: `$ nix search wget`
+  environment.systemPackages = with pkgs; [
+	# //-- 	 Apps 	--//
+	# Programs 
+	libreoffice-fresh
+	google-chrome
+	sublime-merge
+	flameshot
+	peek
+	dolphin
+	unzip
+
+	# Text editors
+  	vim
+	neovim
+	nerdfonts
+
+	# //-- 	 Languages   --//
+	# Rust
+	cargo
+	rustc
+	rust-analyzer
+
+	# python
+	python3
+	python310Packages.black
+
+	# JS
+	nodejs
+
+	# //-- 	 Utils  --//
+	# Quality of life
+	xmousepasteblock	# block middle-mouse paste
+	autotiling		# auto tiling for i3
+
+	# CLI tools
+	wget
+	git
+	btop
+	ripgrep
+	loc
+	thefuck
+	pandoc
+
+	# //-- 	 System  --//
+	# linuxKernel.packages.linux_zen.perf
+
+	# Build
+	gcc
+	pkg-config
+	udev.dev
+
+	# Env tools
+	direnv
+	nix-direnv
+
+	# Shell
+	fish
+	alacritty
+	tmux
+
+	# Window manager
+	i3
+  ];
+
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -115,73 +185,6 @@
   # Enable automatic login for the user.
   services.xserver.displayManager.autoLogin.enable = true;
   services.xserver.displayManager.autoLogin.user = "user";
-
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment.systemPackages = with pkgs; [
-	# //-- 	 Apps 	--//
-
-	# Programs 
-	libreoffice-fresh
-	google-chrome
-	sublime-merge
-	flameshot
-	peek
-	dolphin
-	unzip
-
-	# Text editors
-  	vim
-	neovim
-	nerdfonts
-
-	# //-- 	 Languages   --//
-
-	# Rust
-	cargo
-	rustc
-	rust-analyzer
-
-	# python
-	python3
-	python310Packages.black
-
-	# JS
-	nodejs
-
-	# CLI tools
-	wget
-	git
-	btop
-	ripgrep
-	loc
-	thefuck
-	pandoc
-
-	# //-- 	 System  --//
-
-	# linuxKernel.packages.linux_zen.perf
-
-	# Build
-	gcc
-	pkg-config
-	udev.dev
-
-	# Env tools
-	direnv
-	nix-direnv
-
-	# Shell
-	fish
-	alacritty
-	tmux
-
-	# Window manager
-	i3
-  ];
 
   # Shell & Terminal
   programs.fish.enable = true;
