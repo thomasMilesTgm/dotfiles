@@ -35,11 +35,6 @@
 	nerdfonts
 
 	# //-- 	 Languages   --//
-	# Rust
-	cargo
-	rustc
-	rust-analyzer
-
 	# python
 	python3
 	python310Packages.black
