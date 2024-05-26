@@ -1,17 +1,23 @@
 -- Relative line numbers
 -- NOTE: must be done before NeoTree
-vim.cmd[[set number relativenumber]]
+vim.cmd [[set number relativenumber]]
 -- Open file explorer
 -- vim.cmd[[Neotree]]
 -- Set colorscheme
-vim.cmd[[colorscheme carbonfox]]
+vim.cmd [[colorscheme moonfly]]
 -- Autofmt on save
 vim.cmd [[au BufWritePre * lua vim.lsp.buf.format()]]
 -- Use clipboard for yank
-vim.cmd[[set clipboard=unnamedplus]]
+vim.cmd [[set clipboard=unnamedplus]]
 -- Center cursor
-vim.cmd[[set scrolloff=30]]
+vim.cmd [[set scrolloff=30]]
 -- 2 line command line
-vim.cmd[[set cmdheight=2]]
+vim.cmd [[set cmdheight=2]]
 -- Miss me with your hlsearch
-vim.cmd[[set nohlsearch]]
+vim.cmd [[set nohlsearch]]
+vim.filetype.add({
+	extension = {
+		astro = "astro"
+	}
+})
+require("groovy").setup()

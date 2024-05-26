@@ -1,0 +1,1 @@
+/home/user/misx/dotfiles/nvim/groovy/colors/groovy.vim
