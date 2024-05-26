@@ -15,6 +15,8 @@ lspconfig.rust_analyzer.setup({
 -- lua language server
 lspconfig.lua_ls.setup({})
 
+lspconfig.astro.setup({})
+
 -- python language server
 lspconfig.pyright.setup{}
 
