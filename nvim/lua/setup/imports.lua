@@ -5,14 +5,33 @@ require("lazy").setup({
 	-- Configure Neovim with JSON
 	-- Global settings here `~/.config/nvim/neoconf.json`
 	-- Project specific settings can be changed by adding `.neoconf.json` to a directory
-	{ "folke/neoconf.nvim",    cmd = "Neoconf",                                           config = true },
+	{ "folke/neoconf.nvim",    cmd = "Neoconf", config = true },
 
 	-- Lua LSP & Helpful neovim plugin tools
 	"folke/neodev.nvim",
 
+	-- buck2 buildifier
+	{
+		dir = "~/code/monorepo/buck2/support/buildifier", -- Change if you have monorepo somewhere weird
+		requires = { "nvimtools/none-ls.nvim" },
+	},
+	{
+		"nvimtools/none-ls.nvim", -- actually loaded using require("null-ls")
+		requires = { "nvim-lua/plenary.nvim" },
+		config = function()
+			require("null-ls").setup({
+				sources = {
+					require('none-ls-buildifier'),
+				},
+			})
+		end,
+	},
+
 	-- Icons
 	"nvim-tree/nvim-web-devicons",
 
+	-- minimap
+	{ 'echasnovski/mini.nvim', version = '*' },
 	-- Pretty status line
 	{
 		'nvim-lualine/lualine.nvim',
@@ -142,7 +161,7 @@ require("lazy").setup({
 	'onsails/lspkind.nvim',
 
 	-- Auto-bracketing
-	{ "windwp/nvim-autopairs", config = function() require("nvim-autopairs").setup {} end },
+	{ "windwp/nvim-autopairs",   config = function() require("nvim-autopairs").setup {} end },
 
 	-- telescope
 	{
@@ -162,7 +181,7 @@ require("lazy").setup({
 			-- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
 		}
 	},
-	{ 'akinsho/bufferline.nvim',  version = "v4.4.1", dependencies = 'nvim-tree/nvim-web-devicons' },
+	{ 'akinsho/bufferline.nvim', version = "v4.4.1",                                        dependencies = 'nvim-tree/nvim-web-devicons' },
 
 	-- Aesthetic --
 	'mechatroner/rainbow_csv',
@@ -224,3 +243,4 @@ vim.opt.termguicolors = true
 require("bufferline").setup {}
 require('Comment').setup()
 require('reticle').setup {}
+require('mini.map').setup()

@@ -16,9 +16,23 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+
+  fonts.packages = with pkgs; [
+    noto-fonts
+    noto-fonts-cjk
+    noto-fonts-emoji
+    liberation_ttf
+    fira-code
+    fira-code-symbols
+    mplus-outline-fonts.githubRelease
+    dina-font
+    proggyfonts
+    (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
+  ];
   # System wide packages
   # To search, run: `$ nix search wget`
   environment.systemPackages = with pkgs; [
+
 	# //-- 	 Apps 	--//
 	# Programs 
 	libreoffice-fresh
@@ -28,6 +42,10 @@
 	peek
 	dolphin
 	unzip
+	rofi
+	gimp
+	xdot
+	pulseaudio
 
 	# Text editors
   	vim
@@ -35,12 +53,26 @@
 	nerdfonts
 
 	# //-- 	 Languages   --//
+	# Rust
+	# cargo rustc # Handled by overlay.
+	cargo
+	rustc
+	rust-analyzer
+
 	# python
 	python3
 	python310Packages.black
 
 	# JS
 	nodejs
+	typescript
+	pkgs.nodePackages."@astrojs/language-server"
+
+	# lua
+	lua-language-server
+
+	# C++
+	cmake
 
 	# //-- 	 Utils  --//
 	# Quality of life
@@ -48,13 +80,16 @@
 	autotiling		# auto tiling for i3
 
 	# CLI tools
-	wget
-	git
 	btop
-	ripgrep
+	fd
+	git
 	loc
-	thefuck
 	pandoc
+	ripgrep
+	sd
+	texliveFull
+	thefuck
+	wget
 
 	# //-- 	 System  --//
 	# linuxKernel.packages.linux_zen.perf
@@ -77,7 +112,33 @@
 	i3
   ];
 
-
+  # for moonlander configuration
+  services.udev.extraRules = ''
+  # Rules for Oryx web flashing and live training
+	KERNEL=="hidraw*", ATTRS{idVendor}=="16c0", MODE="0664", GROUP="plugdev"
+	KERNEL=="hidraw*", ATTRS{idVendor}=="3297", MODE="0664", GROUP="plugdev"
+	
+	# Legacy rules for live training over webusb (Not needed for firmware v21+)
+	  # Rule for all ZSA keyboards
+	  SUBSYSTEM=="usb", ATTR{idVendor}=="3297", GROUP="plugdev"
+	  # Rule for the Moonlander
+	  SUBSYSTEM=="usb", ATTR{idVendor}=="3297", ATTR{idProduct}=="1969", GROUP="plugdev"
+	  # Rule for the Ergodox EZ
+	  SUBSYSTEM=="usb", ATTR{idVendor}=="feed", ATTR{idProduct}=="1307", GROUP="plugdev"
+	  # Rule for the Planck EZ
+	  SUBSYSTEM=="usb", ATTR{idVendor}=="feed", ATTR{idProduct}=="6060", GROUP="plugdev"
+	
+	# Wally Flashing rules for the Ergodox EZ
+	ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789B]?", ENV{ID_MM_DEVICE_IGNORE}="1"
+	ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789A]?", ENV{MTP_NO_PROBE}="1"
+	SUBSYSTEMS=="usb", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789ABCD]?", MODE:="0666"
+	KERNEL=="ttyACM*", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789B]?", MODE:="0666"
+	
+	# Keymapp / Wally Flashing rules for the Moonlander and Planck EZ
+	SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE:="0666", SYMLINK+="stm32_dfu"
+	# Keymapp Flashing rules for the Voyager
+	SUBSYSTEMS=="usb", ATTRS{idVendor}=="3297", MODE:="0666", SYMLINK+="ignition_dfu"
+  '';
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -119,6 +180,8 @@
 
   services.xserver = {
     enable = true;
+    videoDrivers = ["nvidiaBeta"];
+
     desktopManager = {
 	xterm.enable = false;
     };
@@ -169,7 +232,7 @@
   users.users.user = {
     isNormalUser = true;
     description = "Tom Miles";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "plugdev" ];
     packages = with pkgs; [
       firefox
       kate
@@ -180,6 +243,17 @@
   # Enable automatic login for the user.
   services.xserver.displayManager.autoLogin.enable = true;
   services.xserver.displayManager.autoLogin.user = "user";
+
+  # File explorer
+  programs.thunar = {
+    enable = true;
+    plugins = with pkgs.xfce; [
+      thunar-archive-plugin
+      thunar-volman
+    ];
+  };
+  services.gvfs.enable = true; # Mount, trash, and other functionalities
+  services.tumbler.enable = true; # Thumbnail support for images
 
   # Shell & Terminal
   programs.fish.enable = true;
@@ -203,6 +277,71 @@
   programs.nix-ld.libraries = with pkgs; [
     # Add any missing dynamic libraries for unpackaged 
     # programs here, NOT in environment.systemPackages
+    stdenv.cc.cc
+    alsa-lib
+    alsa-utils
+    at-spi2-atk
+    at-spi2-core
+    atk
+    binutils
+    cairo
+    # cudatoolkit
+    cups
+    curl
+    clang
+    dbus
+    expat
+    openssl
+    fontconfig
+    freetype
+    fuse3
+    gdk-pixbuf
+    glib
+    gtk3
+    icu
+    icu
+    libGL
+    libappindicator-gtk3
+    libdrm
+    libglvnd
+    libnotify
+    libpulseaudio
+    libunwind
+    libusb1
+    libuuid
+    libxkbcommon
+    libxml2
+    mesa
+    nspr
+    nss
+    pango
+    pavucontrol
+    pipewire
+    playerctl
+    pkg-config
+    pulseaudioFull
+    systemd
+    udev
+    vulkan-loader
+    xwayland             
+    xwaylandvideobridge  
+    wayland              
+    xorg.libX11
+    xorg.libXScrnSaver
+    xorg.libXcomposite
+    xorg.libXcursor
+    xorg.libXdamage
+    xorg.libXext
+    xorg.libXfixes
+    xorg.libXi
+    xorg.libXrandr
+    xorg.libXrender
+    xorg.libXtst
+    xorg.libxcb
+    xorg.libxkbfile
+    xorg.libxshmfence
+    xdg-utils
+    zlib
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -231,4 +370,5 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.11"; # Did you read the comment?
+
 }

@@ -5,20 +5,20 @@ local keymap = vim.api.nvim_set_keymap
 
 -- helper to do normal mode remapping:
 local nmap = function(keys, func, desc)
-    if desc then
-        desc = 'LSP: ' .. desc
-    end
+	if desc then
+		desc = 'LSP: ' .. desc
+	end
 
-    vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
+	vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
 end
 
 -- helper to do visual mode remapping:
 local vmap = function(keys, func, desc)
-    if desc then
-        desc = 'LSP: ' .. desc
-    end
+	if desc then
+		desc = 'LSP: ' .. desc
+	end
 
-    vim.keymap.set('v', keys, func, { buffer = bufnr, desc = desc })
+	vim.keymap.set('v', keys, func, { buffer = bufnr, desc = desc })
 end
 
 -- Go up and down in wrapped lines
@@ -29,6 +29,7 @@ nmap('k', 'gkzz', 'Move up wrapped lines')
 -- Force center on jump to eof
 nmap('G', 'Gzz', 'Jump to EOF')
 vmap('G', 'Gzz', 'Jump to EOF')
+
 
 -- Yeet!
 nmap('<C-j>', '5gjzz', 'Move down @ 5x speed')
@@ -42,10 +43,10 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 -- buffers
-nmap('<leader>w', ':w<CR>', 	'Write current buffer')
-nmap('<leader>W', ':wa<CR>', 	'Write all buffers')
-nmap('<leader>q', ':q<CR>', 	'Close current buffer')
-nmap('<leader>Q', ':qa<CR>', 	'Quit')
+nmap('<leader>w', ':w<CR>', 'Write current buffer')
+nmap('<leader>W', ':wa<CR>', 'Write all buffers')
+nmap('<leader>q', ':q<CR>', 'Close current buffer')
+nmap('<leader>Q', ':qa<CR>', 'Quit')
 
 -- word count
 vmap('<leader>wc', 'g<C-g>', '[c]ord [c]ount')
@@ -65,8 +66,10 @@ nmap("<leader>sh", ":Telescope spell_suggest<CR>", '[s]pelling [h]elp - Telescop
 nmap("<leader>sf", "1z=", '[s]pelling [f]ix - Correct the spelling of a word (yolo)')
 nmap("<leader>sa", "zG", '[s]pelling [a]dd - adds the word under the cursor to internal-wordlist')
 nmap("<leader>sr", "zuG", '[s]pelling [r]emove - remove the word under the cursor to internal-wordlist')
-nmap("<leader>au", ":setlocal spell spelllang=en_au", '[s]pelling [r]emove - remove the word under the cursor to internal-wordlist')
-nmap("<leader>us", ":setlocal spell spelllang=en_us<CR>", '[s]pelling [r]emove - remove the word under the cursor to internal-wordlist')
+nmap("<leader>au", ":setlocal spell spelllang=en_au",
+	'[s]pelling [r]emove - remove the word under the cursor to internal-wordlist')
+nmap("<leader>us", ":setlocal spell spelllang=en_us<CR>",
+	'[s]pelling [r]emove - remove the word under the cursor to internal-wordlist')
 
 -- Useful telescopes...
 nmap("<leader>ct", ":Telescope colorscheme<CR>", 'Telescope colorscheme')
@@ -97,3 +100,24 @@ nmap("ca", vim.lsp.buf.code_action, 'code actions')
 
 -- Source init.lua
 nmap('<leader>g', ':source ~/.config/nvim/init.lua<CR>', 'Source init file')
+
+--minimap
+
+local map = require('mini.map')
+nmap('<Leader>mc', map.close)
+nmap('<Leader>mf', map.toggle_focus)
+nmap('<Leader>mm', map.open)
+nmap('<Leader>mr', map.refresh)
+nmap('<Leader>ms', map.toggle_side)
+nmap('<Leader>mt', map.toggle)
+
+local symbols = map.gen_encode_symbols.dot('3x2')
+map.setup({
+	symbols = {
+		encode = symbols
+	},
+	integrations = {
+		map.gen_integration.builtin_search(),
+		map.gen_integration.diagnostic(),
+	},
+})

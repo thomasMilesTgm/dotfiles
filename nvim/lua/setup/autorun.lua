@@ -4,7 +4,7 @@ vim.cmd [[set number relativenumber]]
 -- Open file explorer
 -- vim.cmd[[Neotree]]
 -- Set colorscheme
-vim.cmd [[colorscheme moonfly]]
+vim.cmd [[colorscheme carbonfox]]
 -- Autofmt on save
 vim.cmd [[au BufWritePre * lua vim.lsp.buf.format()]]
 -- Use clipboard for yank
@@ -20,4 +20,4 @@ vim.filetype.add({
 		astro = "astro"
 	}
 })
-require("groovy").setup()
+-- require("groovy").setup()
