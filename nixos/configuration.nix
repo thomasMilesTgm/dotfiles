@@ -35,29 +35,31 @@
 
 	# //-- 	 Apps 	--//
 	# Programs 
-	libreoffice-fresh
-	google-chrome
-	sublime-merge
-	flameshot
-	peek
 	dolphin
-	unzip
-	rofi
+	flameshot
 	gimp
-	xdot
+	google-chrome
+	libreoffice-fresh
+	peek
 	pulseaudio
+	rofi
+	sqlitebrowser
+	sublime-merge
+	unzip
+	wine
+	xdot
 
 	# Text editors
-  	vim
 	neovim
 	nerdfonts
+  	vim
 
 	# //-- 	 Languages   --//
 	# Rust
 	# cargo rustc # Handled by overlay.
 	cargo
-	rustc
 	rust-analyzer
+	rustc
 
 	# python
 	python3
@@ -77,9 +79,10 @@
 	# //-- 	 Utils  --//
 	# Quality of life
 	xmousepasteblock	# block middle-mouse paste
-	autotiling		# auto tiling for i3
+	# autotiling		# auto tiling for i3 (Dead due to some BS with a package called `nose` not liking the python version)
 
 	# CLI tools
+	graphviz
 	btop
 	fd
 	git
@@ -88,11 +91,13 @@
 	ripgrep
 	sd
 	texliveFull
-	thefuck
+	# thefuck
 	wget
 
 	# //-- 	 System  --//
 	# linuxKernel.packages.linux_zen.perf
+	# linuxKernel.linuxPackages_latest.perf
+	config.boot.kernelPackages.perf
 
 	# Build
 	gcc
@@ -180,15 +185,12 @@
 
   services.xserver = {
     enable = true;
-    videoDrivers = ["nvidiaBeta"];
+    videoDrivers = ["nvidia"];
 
     desktopManager = {
 	xterm.enable = false;
     };
 
-    displayManager = {
-        defaultSession = "none+i3";
-    };
 
     windowManager.i3 = {
       enable = true;
@@ -201,8 +203,13 @@
     };
 
     # Keymap
-    layout = "au";
-    xkbVariant = "";
+    xkb.layout = "au";
+    xkb.variant = "";
+  };
+  services.displayManager = {
+    defaultSession = "none+i3";
+    autoLogin.enable = true;
+    autoLogin.user = "user";
   };
 
   # Enable CUPS to print documents.
@@ -240,9 +247,6 @@
     ];
   };
 
-  # Enable automatic login for the user.
-  services.xserver.displayManager.autoLogin.enable = true;
-  services.xserver.displayManager.autoLogin.user = "user";
 
   # File explorer
   programs.thunar = {
