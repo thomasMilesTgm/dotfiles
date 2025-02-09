@@ -26,6 +26,40 @@ require("lazy").setup({
 			})
 		end,
 	},
+	-- Colorscheme
+	{
+		"scottmckendry/cyberdream.nvim",
+		lazy = false,
+		priority = 1000,
+	},
+	-- Tab bar
+	{
+		'romgrk/barbar.nvim',
+		dependencies = {
+			'lewis6991/gitsigns.nvim', -- OPTIONAL: for git status
+			'nvim-tree/nvim-web-devicons', -- OPTIONAL: for file icons
+		},
+		init = function() vim.g.barbar_auto_setup = false end,
+		opts = {
+			-- lazy.nvim will automatically call setup for you. put your options here, anything missing will use the default:
+			-- animation = true,
+			-- insert_at_start = true,
+			-- …etc.
+		},
+		version = '^1.0.0', -- optional: only update when a new 1.x version is released
+	},
+	-- rustaceanvim
+	{
+		'mrcjkb/rustaceanvim',
+		version = '^5', -- Recommended
+		lazy = false, -- This plugin is already lazy
+	},
+
+	-- hex/rgb color previews
+	'norcalli/nvim-colorizer.lua',
+
+	-- prettier
+	"MunifTanjim/prettier.nvim",
 
 	-- Icons
 	"nvim-tree/nvim-web-devicons",
@@ -50,6 +84,34 @@ require("lazy").setup({
 				indent = { enable = true },
 			})
 		end
+	},
+	-- LSP overlay
+	{
+		"j-hui/fidget.nvim",
+		config = function()
+			require("fidget").setup {
+				-- options
+				progress = {
+					display = {
+						-- How to format a progress notification group's name
+						-- format_group_name = function(group)
+						--    return "groupname:" .. tostring(group)
+						-- end,
+						-- How to format a progress annotation
+						--- @param msg { title: string }
+						format_annote = function(msg)
+							local out = string.gsub(msg.title, "cd %S+/monorepo && ", "")
+							-- trim to max characters, with ellipsis
+							local max = 50
+							if #out > max then
+								out = string.sub(out, 1, max - 3) .. "..."
+							end
+							return out
+						end,
+					},
+				}
+			}
+		end,
 	},
 	-- Comment lines
 	{
@@ -240,7 +302,75 @@ require("lazy").setup({
 })
 -- enable bufferline
 vim.opt.termguicolors = true
-require("bufferline").setup {}
+-- require("bufferline").setup {}
 require('Comment').setup()
-require('reticle').setup {}
-require('mini.map').setup()
+require('reticle').setup()
+
+local mm = require('mini.map')
+local diagnostic_integration = mm.gen_integration.diagnostic({
+	error = 'DiagnosticFloatingError',
+	warn  = 'DiagnosticFloatingWarn',
+	info  = 'DiagnosticFloatingInfo',
+	hint  = 'DiagnosticFloatingHint',
+})
+mm.setup({
+	integrations = {
+		diagnostic_integration,
+		mm.gen_integration.diff(),
+		mm.gen_integration.builtin_search()
+	}
+})
+
+require("cyberdream").setup({
+	-- Enable transparent background
+	transparent = true,
+
+	-- Enable italics comments
+	italic_comments = false,
+
+	-- Replace all fillchars with ' ' for the ultimate clean look
+	hide_fillchars = true,
+
+	-- Modern borderless telescope theme
+	borderless_pickers = true,
+
+	-- Set terminal colors used in `:terminal`
+	terminal_colors = true,
+
+	opts = {
+		variant = "default", -- use "light" for the light variant. Also accepts "auto" to set dark or light colors based on the current value of `vim.o.background`
+		highlights = {
+			-- Highlight groups to override, adding new groups is also possible
+			-- See `:h highlight-groups` for a list of highlight groups or run `:hi` to see all groups and their current values
+
+			-- Example:
+			-- Comment = { fg = "#696969", bg = "NONE", italic = true },
+
+			-- Complete list can be found in `lua/cyberdream/theme.lua`
+		},
+
+		-- Override a highlight group entirely using the color palette
+		-- overrides = function(colors) -- NOTE: This function nullifies the `highlights` option
+		-- 	-- Example:
+		-- 	return {
+		-- 		Comment = { fg = colors.green, bg = "NONE", italic = true },
+		-- 		["@property"] = { fg = colors.magenta, bold = true },
+		-- 	}
+		-- end,
+
+		-- Override a color entirely
+		-- colors = {
+		-- 	-- For a list of colors see `lua/cyberdream/colours.lua`
+		-- 	-- Example:
+		-- 	bg = "#000000",
+		-- 	green = "#00ff00",
+		-- 	magenta = "#ff00ff",
+		-- },
+	},
+
+	-- Disable or enable colorscheme extensions
+	extensions = {
+		telescope = true,
+		notify = true,
+	},
+})

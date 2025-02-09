@@ -4,7 +4,7 @@ vim.cmd [[set number relativenumber]]
 -- Open file explorer
 -- vim.cmd[[Neotree]]
 -- Set colorscheme
-vim.cmd [[colorscheme carbonfox]]
+vim.cmd [[colorscheme cyberdream]]
 -- Autofmt on save
 vim.cmd [[au BufWritePre * lua vim.lsp.buf.format()]]
 -- Use clipboard for yank

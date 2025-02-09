@@ -96,7 +96,8 @@ nmap('type', vim.lsp.buf.type_definition, 'Type Definition')
 
 -- Refactor
 nmap('<leader>rn', vim.lsp.buf.rename, 'Rename')
-nmap("ca", vim.lsp.buf.code_action, 'code actions')
+-- nmap("ca", vim.lsp.buf.code_action, 'code actions')
+nmap("<leader>ca", vim.cmd.RustLsp('codeAction'), '[c]ode [a]ction')
 
 -- Source init.lua
 nmap('<leader>g', ':source ~/.config/nvim/init.lua<CR>', 'Source init file')
