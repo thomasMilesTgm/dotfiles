@@ -18,6 +18,13 @@
 # config starts here: #
 #######################
 
+# left/right displays bind ws-[1-5] & ws-[6-10] respectively
+set $display_left HDMI-0
+set $display_right DP-4
+
+# Run xrandr commands to get the screens setup properly
+exec_always --no-startup-id  ~/.config/i4/scripts/monitors.sh
+
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
@@ -65,7 +72,7 @@ gaps outer 3
 # window title alignment
 # title_align center
 
-# The autolayouts themselves are jank AF, but p to swap 2 containers is _nice_
+# The autolayouts themselves are jank AF, but MOD+p to swap 2 containers is _nice_
 exec_always --no-startup-id i3-layouts 
 
 # Kills the actually worst "feature" in any software ever (X11 middle mouse paste)
@@ -177,7 +184,7 @@ bindsym $mod+r mode "resize"
 ######################################
 
 # start a terminal
-bindsym $mod+Return exec alacritty -o font.size=8 -e fish
+bindsym $mod+Return exec alacritty -e fish
 
 # start a tmux 
 bindsym $mod+Shift+Return exec alacritty -o font.size=8 -e tmux new-session -A -s default
@@ -201,7 +208,7 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 
 # keybinding in fancy rofi (automated):
-bindsym F1 exec ~/.config/i3/scripts/keyhint-2
+# bindsym F1 exec ~/.config/i3/scripts/keyhint-2
 # alternative
 # keybinding list in editor:
 # bindsym $mod+F1 exec xed ~/.config/i3/keybindings
@@ -306,9 +313,9 @@ bindsym $mod+Shift+p exec ~/.config/i3/scripts/power-profiles
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
-set $ws1 "1:"
-set $ws2 "2:"
-set $ws3 "3:"
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
 set $ws4 "4"
 set $ws5 "5"
 set $ws6 "6"
@@ -320,11 +327,16 @@ set $ws10 "10"
 # use workspaces on different displays:
 # where you have to replace VGA-0/HDMI-0 with the names for your displays
 # you can get from xrandr command
-#workspace $ws1 output VGA-0
-#workspace $ws2 output VGA-0
-#workspace $ws3 output HDMI-0
-#workspace $ws4 output HDMI-0
-#workspace $ws5 output HDMI-0
+workspace $ws1 output $display_left
+workspace $ws2 output $display_left
+workspace $ws3 output $display_left
+workspace $ws4 output $display_left
+workspace $ws5 output $display_left
+workspace $ws6 output $display_right
+workspace $ws7 output $display_right
+workspace $ws8 output $display_right
+workspace $ws9 output $display_right
+workspace $ws10 output $display_right
 
 
 ##############
@@ -418,8 +430,7 @@ exec --no-startup-id /usr/bin/dunst
 
 # autotiling script
 # https://github.com/nwg-piotr/autotiling
-# `yay -S autotiling ;) (it is in AUR)
-#exec_always --no-startup-id autotiling
+# exec_always --no-startup-id autotiling
 
 # Autostart apps as you like
 #exec --no-startup-id sleep 2 && xfce4-terminal

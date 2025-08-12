@@ -16,16 +16,60 @@ require("lazy").setup({
 		requires = { "nvimtools/none-ls.nvim" },
 	},
 	{
-		"nvimtools/none-ls.nvim", -- actually loaded using require("null-ls")
-		requires = { "nvim-lua/plenary.nvim" },
+		"nvimtools/none-ls.nvim",
+		lazy = false,
 		config = function()
-			require("null-ls").setup({
+			-- IMPORTANT!
+			local augroup = vim.api.nvim_create_augroup("NoneLsFormatting", {})
+
+			local on_attach = function(client, bufnr)
+				if client.supports_method("textDocument/formatting") then
+					vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+					vim.api.nvim_create_autocmd("BufWritePre", {
+						group = augroup,
+						buffer = bufnr,
+						callback = function()
+							vim.lsp.buf.format({ bufnr = bufnr })
+						end,
+					})
+				end
+			end
+
+			local null_ls = require("null-ls")
+			null_ls.setup({
 				sources = {
-					require('none-ls-buildifier'),
+					-- lua
+					null_ls.builtins.formatting.stylua,
+
+					-- typescript
+					null_ls.builtins.formatting.prettierd.with({
+						extra_args = {
+							"--no-semi",
+							"--single-quote",
+							"--jsx-single-quote"
+						}
+					}),
+
+					-- python
+					null_ls.builtins.diagnostics.mypy.with({
+						extra_args = { "--ignore-missing-imports" }
+					}),
 				},
+				on_attach = on_attach,
 			})
 		end,
 	},
+	-- {
+	-- 	"nvimtools/none-ls.nvim", -- actually loaded using require("null-ls")
+	-- 	requires = { "nvim-lua/plenary.nvim" },
+	-- 	config = function()
+	-- 		require("null-ls").setup({
+	-- 			sources = {
+	-- 				require('none-ls-buildifier'),
+	-- 			},
+	-- 		})
+	-- 	end,
+	-- },
 	-- Colorscheme
 	{
 		"scottmckendry/cyberdream.nvim",
@@ -36,7 +80,7 @@ require("lazy").setup({
 	{
 		'romgrk/barbar.nvim',
 		dependencies = {
-			'lewis6991/gitsigns.nvim', -- OPTIONAL: for git status
+			-- 'lewis6991/gitsigns.nvim', -- OPTIONAL: for git status
 			'nvim-tree/nvim-web-devicons', -- OPTIONAL: for file icons
 		},
 		init = function() vim.g.barbar_auto_setup = false end,
@@ -51,7 +95,7 @@ require("lazy").setup({
 	-- rustaceanvim
 	{
 		'mrcjkb/rustaceanvim',
-		version = '^5', -- Recommended
+		version = '^6', -- Recommended
 		lazy = false, -- This plugin is already lazy
 	},
 
@@ -84,6 +128,52 @@ require("lazy").setup({
 				indent = { enable = true },
 			})
 		end
+	},
+	{
+		"garymjr/nvim-snippets",
+		keys = {
+			{
+				"<Tab>",
+				function()
+					if vim.snippet.active({ direction = 1 }) then
+						vim.schedule(function()
+							vim.snippet.jump(1)
+						end)
+						return
+					end
+					return "<Tab>"
+				end,
+				expr = true,
+				silent = true,
+				mode = "i",
+			},
+			{
+				"<Tab>",
+				function()
+					vim.schedule(function()
+						vim.snippet.jump(1)
+					end)
+				end,
+				expr = true,
+				silent = true,
+				mode = "s",
+			},
+			{
+				"<S-Tab>",
+				function()
+					if vim.snippet.active({ direction = -1 }) then
+						vim.schedule(function()
+							vim.snippet.jump(-1)
+						end)
+						return
+					end
+					return "<S-Tab>"
+				end,
+				expr = true,
+				silent = true,
+				mode = { "i", "s" },
+			},
+		},
 	},
 	-- LSP overlay
 	{
@@ -161,7 +251,7 @@ require("lazy").setup({
 				HACK = { icon = " ", color = "warning" },
 				WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
 				PERF = { icon = "⌖ ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
-				NOTE = { icon = "🕮 ", color = "hint", alt = { "INFO" } },
+				-- NOTE = { icon = "🕮 ", color = "hint", alt = { "INFO" } },
 				TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
 			},
 			gui_style = {
@@ -214,16 +304,16 @@ require("lazy").setup({
 
 	-- auto complete
 	'neovim/nvim-lspconfig',
+	{ 'hrsh7th/nvim-cmp' },
 	'hrsh7th/cmp-nvim-lsp',
 	'hrsh7th/cmp-buffer',
 	'hrsh7th/cmp-path',
 	'hrsh7th/cmp-cmdline',
-	'hrsh7th/nvim-cmp',
 	'saadparwaiz1/cmp_luasnip',
 	'onsails/lspkind.nvim',
 
 	-- Auto-bracketing
-	{ "windwp/nvim-autopairs",   config = function() require("nvim-autopairs").setup {} end },
+	{ "windwp/nvim-autopairs", config = function() require("nvim-autopairs").setup {} end },
 
 	-- telescope
 	{
@@ -243,7 +333,7 @@ require("lazy").setup({
 			-- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
 		}
 	},
-	{ 'akinsho/bufferline.nvim', version = "v4.4.1",                                        dependencies = 'nvim-tree/nvim-web-devicons' },
+	{ 'akinsho/bufferline.nvim',  version = "v4.4.1", dependencies = 'nvim-tree/nvim-web-devicons' },
 
 	-- Aesthetic --
 	'mechatroner/rainbow_csv',
@@ -337,14 +427,14 @@ require("cyberdream").setup({
 	-- Set terminal colors used in `:terminal`
 	terminal_colors = true,
 
-	opts = {
+	options = {
 		variant = "default", -- use "light" for the light variant. Also accepts "auto" to set dark or light colors based on the current value of `vim.o.background`
 		highlights = {
 			-- Highlight groups to override, adding new groups is also possible
 			-- See `:h highlight-groups` for a list of highlight groups or run `:hi` to see all groups and their current values
 
 			-- Example:
-			-- Comment = { fg = "#696969", bg = "NONE", italic = true },
+			Comment = { fg = "#696969", bg = "NONE", italic = true },
 
 			-- Complete list can be found in `lua/cyberdream/theme.lua`
 		},

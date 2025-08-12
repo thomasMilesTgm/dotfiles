@@ -1,7 +1,8 @@
 -- Keymap opts
-local opts = { noremap = true, silent = false }
+local opts = { noremap = false, silent = false }
 -- helper function to reduce typing
 local keymap = vim.api.nvim_set_keymap
+
 
 -- helper to do normal mode remapping:
 local nmap = function(keys, func, desc)
@@ -96,8 +97,8 @@ nmap('type', vim.lsp.buf.type_definition, 'Type Definition')
 
 -- Refactor
 nmap('<leader>rn', vim.lsp.buf.rename, 'Rename')
--- nmap("ca", vim.lsp.buf.code_action, 'code actions')
-nmap("<leader>ca", vim.cmd.RustLsp('codeAction'), '[c]ode [a]ction')
+nmap("ca", vim.lsp.buf.code_action, 'code actions')
+-- nmap("<leader>ca", vim.cmd.RustLsp('codeAction'), '[c]ode [a]ction')
 
 -- Source init.lua
 nmap('<leader>g', ':source ~/.config/nvim/init.lua<CR>', 'Source init file')
