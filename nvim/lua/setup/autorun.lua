@@ -6,10 +6,10 @@ vim.cmd [[set number relativenumber]]
 -- vim.cmd[[Neotree]]
 -- Set colorscheme
 
-vim.cmd [[colorscheme cyberdream]]
+-- vim.cmd [[colorscheme cyberdream]]
 
 -- Autofmt on save
--- vim.cmd [[au BufWritePre * lua vim.lsp.buf.format()]]
+vim.cmd [[au BufWritePre * lua vim.lsp.buf.format()]]
 
 -- Use clipboard for yank
 vim.cmd [[set clipboard=unnamedplus]]

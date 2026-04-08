@@ -8,4 +8,3 @@ require "user.spelling"
 -- Commands to run at start
 require "setup.autorun"
 
-require "colorizer".setup()

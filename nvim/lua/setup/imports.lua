@@ -16,60 +16,16 @@ require("lazy").setup({
 		requires = { "nvimtools/none-ls.nvim" },
 	},
 	{
-		"nvimtools/none-ls.nvim",
-		lazy = false,
+		"nvimtools/none-ls.nvim", -- actually loaded using require("null-ls")
+		requires = { "nvim-lua/plenary.nvim" },
 		config = function()
-			-- IMPORTANT!
-			local augroup = vim.api.nvim_create_augroup("NoneLsFormatting", {})
-
-			local on_attach = function(client, bufnr)
-				if client.supports_method("textDocument/formatting") then
-					vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-					vim.api.nvim_create_autocmd("BufWritePre", {
-						group = augroup,
-						buffer = bufnr,
-						callback = function()
-							vim.lsp.buf.format({ bufnr = bufnr })
-						end,
-					})
-				end
-			end
-
-			local null_ls = require("null-ls")
-			null_ls.setup({
+			require("null-ls").setup({
 				sources = {
-					-- lua
-					null_ls.builtins.formatting.stylua,
-
-					-- typescript
-					null_ls.builtins.formatting.prettierd.with({
-						extra_args = {
-							"--no-semi",
-							"--single-quote",
-							"--jsx-single-quote"
-						}
-					}),
-
-					-- python
-					null_ls.builtins.diagnostics.mypy.with({
-						extra_args = { "--ignore-missing-imports" }
-					}),
+					require('none-ls-buildifier'),
 				},
-				on_attach = on_attach,
 			})
 		end,
 	},
-	-- {
-	-- 	"nvimtools/none-ls.nvim", -- actually loaded using require("null-ls")
-	-- 	requires = { "nvim-lua/plenary.nvim" },
-	-- 	config = function()
-	-- 		require("null-ls").setup({
-	-- 			sources = {
-	-- 				require('none-ls-buildifier'),
-	-- 			},
-	-- 		})
-	-- 	end,
-	-- },
 	-- Colorscheme
 	{
 		"scottmckendry/cyberdream.nvim",
@@ -99,8 +55,6 @@ require("lazy").setup({
 		lazy = false, -- This plugin is already lazy
 	},
 
-	-- hex/rgb color previews
-	'norcalli/nvim-colorizer.lua',
 
 	-- prettier
 	"MunifTanjim/prettier.nvim",
@@ -358,24 +312,6 @@ require("lazy").setup({
 
 
 	-- Copilot --
-	{
-		"zbirenbaum/copilot.lua",
-		cmd = "Copilot",
-		event = "InsertEnter",
-		config = function()
-			require("copilot").setup({
-				server_opts_overrides = {
-					trace = "verbose",
-					settings = {
-						advanced = {
-							listCount = 10, -- #completions for panel
-							inlineSuggestCount = 3, -- #completions for getCompletions
-						}
-					},
-				}
-			})
-		end,
-	},
 
 	-- Auto complete support
 	{
